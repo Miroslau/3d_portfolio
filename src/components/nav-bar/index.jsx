@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import { navBarMenu } from '../../constants/nav-bar-menu.js';
 
 const NavBar = () => {
   const checkActiveNav = ({ isActive }) =>
@@ -19,12 +20,11 @@ const NavBar = () => {
         <p className="blue-gradient_text">AH</p>
       </NavLink>
       <nav className="flex text-lg gap-7 font-medium">
-        <NavLink to="/about" className={checkActiveNav}>
-          About
-        </NavLink>
-        <NavLink to="/projects" className={checkActiveNav}>
-          Projects
-        </NavLink>
+        {navBarMenu.slice(1).map(({ id, path, title }) => (
+          <NavLink key={id} to={path} className={checkActiveNav}>
+            {title}
+          </NavLink>
+        ))}
       </nav>
     </header>
   );

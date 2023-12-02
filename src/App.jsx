@@ -1,5 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import NavBar from './components/nav-bar/index.jsx';
+import { navBarMenu } from './constants/nav-bar-menu.js';
 
 const App = () => {
   return (
@@ -7,10 +8,9 @@ const App = () => {
       <Router>
         <NavBar />
         <Routes>
-          <Route path="/" element={'Home'} />
-          <Route path="/about" element={'About'} />
-          <Route path="/projects" element={'Projects'} />
-          <Route path="/contact" element={'Contact'} />
+          {navBarMenu.map(({ id, path, element }) => (
+            <Route key={id} path={path} element={element} />
+          ))}
         </Routes>
       </Router>
     </main>
