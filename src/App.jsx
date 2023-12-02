@@ -1,6 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import NavBar from './components/nav-bar/index.jsx';
-import { navBarMenu } from './constants/nav-bar-menu.js';
+import { navBarMenu } from './constants/nav-bar-menu.jsx';
 
 const App = () => {
   return (
