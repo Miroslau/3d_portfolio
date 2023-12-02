@@ -1,20 +1,20 @@
-import {Route, BrowserRouter as Router, Routes} from "react-router-dom";
-import NavBar from "./components/nav-bar/index.jsx";
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import NavBar from './components/nav-bar/index.jsx';
 
 const App = () => {
-    return (
-        <main className="bg-slate-300/20">
-            <Router>
-                <NavBar />
-                <Routes>
-                    <Route path="/" element={'Home'} />
-                    <Route path="/about" element={'About'} />
-                    <Route path="/projects" element={'Projects'} />
-                    <Route path="/contact" element={'Contact'} />
-                </Routes>
-            </Router>
-        </main>
-    );
+  return (
+    <main className="bg-slate-300/20">
+      <Router>
+        <NavBar />
+        <Routes>
+          <Route path="/" element={'Home'} />
+          <Route path="/about" element={'About'} />
+          <Route path="/projects" element={'Projects'} />
+          <Route path="/contact" element={'Contact'} />
+        </Routes>
+      </Router>
+    </main>
+  );
 };
 
 export default App;
