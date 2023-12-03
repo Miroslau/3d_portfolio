@@ -9,6 +9,7 @@ import {
 import Sky from '../../models/Sky.jsx';
 import Bird from '../../models/Bird.jsx';
 import Plane from '../../models/Plane.jsx';
+import PopupInfo from '../../components/popup-info/index.jsx';
 
 const Home = () => {
   const [islandScale, islandPosition, islandRotation] =
@@ -31,7 +32,7 @@ const Home = () => {
                    items-center
                    justify-center"
       >
-        popup
+        {currentStage && <PopupInfo currentStage={currentStage} />}
       </div>
       <Canvas
         className={`w-full h-screen bg-transparent ${
