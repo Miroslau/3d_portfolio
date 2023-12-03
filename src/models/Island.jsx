@@ -7,15 +7,120 @@ Source: https://sketchfab.com/3d-models/foxs-islands-163b68e09fcc47618450150be77
 Title: Fox's islands
 */
 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useGLTF } from '@react-three/drei';
 import { a } from '@react-spring/three';
 
 import islandScene from '../assets/3d/island.glb';
+import { useFrame, useThree } from '@react-three/fiber';
 
-const Island = props => {
+const DUMPING_FACTOR = 0.95;
+
+const Island = ({ isRotating, setRotating, setCurrentStage, ...props }) => {
   const islandRef = useRef();
   const { nodes, materials } = useGLTF(islandScene);
+  const { gl, viewport } = useThree();
+
+  const lastXPosition = useRef(0);
+  const rotationSpeed = useRef(0);
+
+  const handlePointerDown = event => {
+    event.stopPropagation();
+    event.preventDefault();
+    setRotating(true);
+
+    lastXPosition.current = event.touches
+      ? event.touches[0].clientX
+      : event.clientX;
+  };
+
+  const handlePointerUp = event => {
+    event.stopPropagation();
+    event.preventDefault();
+    setRotating(false);
+  };
+
+  const handlePointerMove = event => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if (isRotating) {
+      const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+
+      const delta = (clientX - lastXPosition.current) / viewport.width;
+
+      islandRef.current.rotation.y += delta * 0.01 * Math.PI;
+      lastXPosition.current = clientX;
+      rotationSpeed.current = delta * 0.01 * Math.PI;
+    }
+  };
+
+  const handleKeyDown = event => {
+    if (event.key === 'ArrowLeft') {
+      if (!isRotating) setRotating(true);
+      islandRef.current.rotation.y += 0.01 * Math.PI;
+    } else if (event.key === 'ArrowRight') {
+      if (!isRotating) setRotating(true);
+      islandRef.current.rotation.y -= 0.01 * Math.PI;
+    }
+  };
+
+  const handleKeyUp = event => {
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      setRotating(false);
+    }
+  };
+
+  useEffect(() => {
+    const canvas = gl.domElement;
+    canvas.addEventListener('pointerdown', handlePointerDown);
+    canvas.addEventListener('pointerup', handlePointerUp);
+    canvas.addEventListener('pointermove', handlePointerMove);
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      canvas.removeEventListener('pointerdown', handlePointerDown);
+      canvas.removeEventListener('pointerup', handlePointerUp);
+      canvas.removeEventListener('pointermove', handlePointerMove);
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [gl, handlePointerDown, handlePointerUp, handlePointerMove]);
+
+  useFrame(() => {
+    if (!isRotating) {
+      rotationSpeed.current *= DUMPING_FACTOR;
+
+      if (Math.abs(rotationSpeed.current) < 0.001) {
+        rotationSpeed.current = 0;
+      }
+
+      islandRef.current.rotation.y += rotationSpeed.current;
+    } else {
+      const rotation = islandRef.current.rotation.y;
+      const normalizedRotation =
+        ((rotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+
+      switch (true) {
+        case normalizedRotation >= 5.45 && normalizedRotation <= 5.85:
+          setCurrentStage(4);
+          break;
+        case normalizedRotation >= 0.85 && normalizedRotation <= 1.3:
+          setCurrentStage(3);
+          break;
+        case normalizedRotation >= 2.4 && normalizedRotation <= 2.6:
+          setCurrentStage(2);
+          break;
+        case normalizedRotation >= 4.25 && normalizedRotation <= 4.75:
+          setCurrentStage(1);
+          break;
+        default:
+          setCurrentStage(null);
+      }
+    }
+  });
+
   return (
     <a.group ref={islandRef} {...props}>
       <mesh
