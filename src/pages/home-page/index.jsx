@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import Loader from '../../components/loader/index.jsx';
 import Island from '../../models/Island.jsx';
 import { mirIslandForScreenSize } from '../../utils/index.js';
+import Sky from '../../models/Sky.jsx';
 
 const Home = () => {
   const [islandScale, islandPosition, islandRotation] =
@@ -42,6 +43,7 @@ const Home = () => {
             intensity={1}
           />
 
+          <Sky />
           <Island
             position={islandPosition}
             scale={islandScale}
